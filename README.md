@@ -1,6 +1,3 @@
-
-  
-
 # SH Authentication System App Controller
 This npm module is the nextjs app controller, designed for managing applications and retrieving data registered on the official website. The module supports fetching application data from the official website, as well as remotely activating, deactivating, and displaying alert toast messages without the need for rebuilding or modifying the source code.
 
@@ -18,25 +15,25 @@ npm i --save-dev shas-app-controller
 Copy the **app id** and **app secret** that is provided into application details page.
 
  
-### 1. Creating a Configuration File
+### 2. Creating a Configuration File
 
 Create a **shas.config.ts** file in the root directory:
 ```
 
 import SHAS from "sh-authentication-system";
 
-// provide app id and secret provided from our website
+// pass app id and secret provided from our website
 
 const { ContentWrapper, appData, brandData } = await SHAS({
 
-appId: process.env.SHAS_APP_ID as string,
-appSecret: process.env.SHAS_APP_SECRET as string,
+  appId: process.env.SHAS_APP_ID as string,
+  appSecret: process.env.SHAS_APP_SECRET as string,
 
-// Optional
-// If you want to modify node fetch caching props
-// Default value is "default"
+  // Optional
+  // If you want to modify node fetch caching props
+  // Default value is "default"
 
-cache: "no-cache" // Suggested for quick update data from shas server.
+  cache: "no-cache" // Suggested for quick update data from shas server.
 
 });
 
@@ -53,7 +50,7 @@ SHAS_APP_SECRET=
 ```
 
 
-### 2. Using the ContentWrapper in Layout
+### 3. Using the ContentWrapper in Layout
 
 In your **layout.tsx**, wrap the children with **ContentWrapper**:
 
@@ -66,20 +63,20 @@ import { ContentWrapper } from "@/shas.config";
 ...
 
 export  default  async  function  RootLayout({ children }:  Readonly<{ children:  React.ReactNode; }>) {
-	return (
-		<html  lang="en">
-			<body>
-				<ContentWrapper>
-					{children}
-				</ContentWrapper>
-			</body>
-		</html>
-	);
+  return (
+    <html  lang="en">
+	  <body>
+		<ContentWrapper>
+		  {children}
+		</ContentWrapper>
+	  </body>
+	</html>
+  );
 };
 
 ```
 
-### 3. Accessing appData and brandData
+### 4. Accessing appData and brandData
 
 You can now access **appData** and **brandData** in any of your project files:
 
