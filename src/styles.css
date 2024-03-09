@@ -124,6 +124,33 @@
     text-align: center;
 }
 
+.toast-container-shas {
+    width: 700px;
+}
+.toast-action-button-shas {
+    display: block;
+    width: fit-content;
+    margin: 10px 0 0 auto;
+    background: #9910bb;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 15px;
+    transition: 0.3s ease all;
+}
+
+.toast-action-button-shas:hover {
+    background: #6c0785;
+}
+
+@media (prefers-color-scheme: dark) {
+    .toast-shas {
+        background-color: rgb(17 24 39);
+        color: rgb(229 231 235);
+    }
+    .Toastify__close-button--light {
+        color: rgb(229 231 235);
+    }
+}
 /* Responsive styles */
 @media (max-width: 768px) {
     .container-shas {
@@ -141,6 +168,9 @@
     .button-shas {
         font-size: 1rem;
         padding: 8px 16px;
+    }
+    .toast-container-shas {
+        width: 500px;
     }
 }
 
@@ -162,6 +192,15 @@
         font-size: 0.9rem;
         padding: 6px 12px;
     }
+    .toast-container-shas {
+        width: 420px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .toast-container-shas {
+        width: 100%;
+    }
 }
 
 @keyframes gradientAnimation-shas {
@@ -177,3 +216,4 @@
         background-position: 0% 0%;
     }
 }
+

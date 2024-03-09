@@ -2,8 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { Profile } from "next-auth";
-import type { OIDCConfig } from "@auth/core/providers";
 import ShowToast from "./ShowToast";
 import "./styles.css";
 
@@ -15,6 +13,7 @@ interface TimestampFieldValue {
 interface SHASOptionType {
   appId?: string;
   appSecret?: string;
+  cache?: RequestCache;
 }
 
 interface AppDataType {
@@ -98,20 +97,20 @@ async function getData(options: SHASOptionType): Promise<ResponseType> {
       client_id: options.appId,
       client_secret: options.appSecret
     }),
-    cache: "no-cache"
+    cache: options.cache,
   });
 
 
   const recieved = await response.json() as ApiResponseType;
 
   if (recieved.status == "error") return {
-    title: "Server returned error",
+    title: "Server returned with error",
     description: recieved.message
   }
 
   if (!recieved.data) return {
-    title: "Unknown error",
-    description: "",
+    title: "Failed to fetch data",
+    description: "Server returned with success but data is null",
   }
 
   recieved.data.appInfo.createdOn = timeStampToDate(recieved.data.appInfo.createdOn);
@@ -132,7 +131,7 @@ async function getData(options: SHASOptionType): Promise<ResponseType> {
 
   if (recieved.data.appInfo.status === "suspended") return {
     title: "Application Suspended",
-    description: `Your application has been suspended by the ${recieved.data.brandInfo.name} control panel due to the detection of unusual activities or violations of our rules.`,
+    description: `Your application has been suspended by the ${recieved.data.brandInfo.name || "CloudBurst Lab"} control panel due to the detection of unusual activities or violations of our rules.`,
     appData: recieved.data.appInfo,
     brandData: recieved.data.brandInfo,
   }
@@ -145,39 +144,11 @@ async function getData(options: SHASOptionType): Promise<ResponseType> {
 
 async function SHAS(options: SHASOptionType = {}) {
 
-  if (!options.appId) options.appId = process.env.STOCK_APP_ID;
-  if (!options.appSecret) options.appSecret = process.env.STOCK_APP_SECRET;
+  if (!options.appId) options.appId = process.env.SHAS_APP_ID;
+  if (!options.appSecret) options.appSecret = process.env.SHAS_APP_SECRET;
+  if (!options.cache) options.cache = "default";
 
   const { appData, brandData, title, description } = await getData(options);
-
-  const CloudBurstLab = (params: Partial<OIDCConfig<Profile>> = {}): OIDCConfig<Profile> => {
-    const {
-      id = "cloudburst-lab",
-      name = "CloudBurst Lab",
-      type = "oidc",
-      issuer = "https://sh-authentication-system.vercel.app/api/oauth",
-      clientId = options.appId,
-      clientSecret = options.appSecret,
-      checks = ["pkce", "state", "nonce"],
-      authorization = { params: { scope: 'openid profile email' } }
-    } = params;
-
-    return {
-      id,
-      name,
-      type,
-      issuer,
-      clientId,
-      clientSecret,
-      checks,
-      authorization,
-      style: {
-        bg: "#fff",
-        logo: "./cloudburst_lab.png",
-        text: "#000",
-      }
-    };
-  };
 
   const ContentWrapper = ({ children }: { children: React.ReactNode }) => (title || description) ? (
     <main className="main-shas">
@@ -217,7 +188,7 @@ async function SHAS(options: SHASOptionType = {}) {
     </>
   );
 
-  return { appData, brandData, ContentWrapper, CloudBurstLab };
+  return { appData, brandData, ContentWrapper };
 };
 
 export default SHAS;

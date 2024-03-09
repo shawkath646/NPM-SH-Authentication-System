@@ -6,7 +6,7 @@
             "dom.iterable",
             "esnext"
         ],
-        "allowJs": false, // Change to false if you want TypeScript to check .js files
+        "allowJs": false,
         "esModuleInterop": true,
         "declaration": true,
         "strict": true,

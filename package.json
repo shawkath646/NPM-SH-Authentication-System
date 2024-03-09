@@ -1,7 +1,10 @@
 {
-  "name": "sh-authentication-system",
-  "version": "2.0.1",
+  "name": "shas-app-controller",
+  "version": "1.0.0",
   "description": "This npm module is the SH Authentication System, designed for managing applications and retrieving data registered on the official website. The module supports fetching application data from the official website, as well as remotely activating, deactivating, and displaying alert toast messages without the need for rebuilding or modifying the source code.",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
@@ -9,14 +12,14 @@
   "files": [
     "dist"
   ],
-  "source": "src/index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shawkath646/NPM-shas-app-controller.git"
+  },
   "keywords": [
-    "Next.js 14",
+    "Nextjs 14",
     "OAuth 2.0",
     "authentication",
-    "providers",
     "sign in",
     "sign up",
     "create new account",
@@ -29,29 +32,22 @@
     "remote control",
     "web application",
     "remote access",
-    "OpenID client",
     "Cloudburst Lab",
     "sh authentication system"
   ],
   "author": "Shawkat Hossain Maruf",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shawkath646/NPM-SH-Authentication-System.git"
-  },
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shawkath646/NPM-shas-app-controller.git/issues"
+  },
   "devDependencies": {
     "@types/node": ">=20.11.25",
     "@types/react": ">=18.2.64",
-    "next-auth": ">=5.0.0-beta.15",
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
-  },
-  "dependencies": {
-    "react-toastify": ">=10.0.4"
-  },
-  "peerDependencies": {
     "next": ">=13",
     "react": ">=18",
     "react-dom": ">=18"
+  },
+  "dependencies": {
+    "react-toastify": ">=10.0.4"
   }
 }

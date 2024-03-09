@@ -1,15 +1,22 @@
 "use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function ShowToast({ toastMessage, toastAction }: { toastMessage: string; toastAction?: string }) {
 
-    const router = useRouter();
+    const toastBox = (
+        <div className="toast-body-shas">
+            <p>{toastMessage}</p>
+            {toastAction && (
+                <Link href={toastAction} className="toast-action-button-shas">Details...</Link>
+            )}
+        </div>
+    );
 
     useEffect(() => {
-        toast(toastMessage, {
+        toast(toastBox, {
             position: "bottom-right",
             autoClose: false,
             hideProgressBar: false,
@@ -17,25 +24,15 @@ export default function ShowToast({ toastMessage, toastAction }: { toastMessage:
             pauseOnHover: true,
             draggable: false,
             progress: undefined,
+            rtl: false,
             theme: "light",
             transition: Bounce,
+            className: "toast-shas",
         });
     }, []);
 
     return (
-        <ToastContainer
-            position="bottom-right"
-            autoClose={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable={false}
-            theme="light"
-            onClick={() => {
-                if (toastAction) router.push(toastAction);
-            }}
-        />
+        <ToastContainer className="toast-container-shas" />
     );
 
 }
