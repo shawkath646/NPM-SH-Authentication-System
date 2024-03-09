@@ -141,10 +141,9 @@ async function getData(options: SHASOptionType): Promise<ResponseType> {
     appData: recieved.data.appInfo,
     brandData: recieved.data.brandInfo,
   }
+};
 
-}
-
-export default async function SHAS(options: SHASOptionType = {}) {
+async function SHAS(options: SHASOptionType = {}) {
 
   if (!options.appId) options.appId = process.env.STOCK_APP_ID;
   if (!options.appSecret) options.appSecret = process.env.STOCK_APP_SECRET;
@@ -218,7 +217,7 @@ export default async function SHAS(options: SHASOptionType = {}) {
     </>
   );
 
-
   return { appData, brandData, ContentWrapper, CloudBurstLab };
-}
+};
 
+export default SHAS;
