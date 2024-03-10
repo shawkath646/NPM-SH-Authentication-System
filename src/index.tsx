@@ -1,6 +1,5 @@
 "use server";
 import Link from "next/link";
-import Image from "next/image";
 import React from "react";
 import ShowToast from "./ShowToast";
 import "./styles.css";
@@ -150,7 +149,8 @@ async function SHAS(options: SHASOptionType = {}) {
 
   const { appData, brandData, title, description } = await getData(options);
 
-  const ContentWrapper = ({ children }: { children: React.ReactNode }) => (title || description) ? (
+
+  const ContentWrapper = async ({ children }: { children: React.ReactNode }) => (title || description) ? (
     <main className="main-shas">
       <div>
         <div className="wave-shas"></div>
@@ -172,7 +172,7 @@ async function SHAS(options: SHASOptionType = {}) {
           <section className="footer-logo-section-shas">
             {brandData?.icon && (
               <Link href={brandData?.website || "https://cloudburstlab.vercel.app"}>
-                <Image src={brandData.icon} alt={`${brandData?.name || "CloudBurst Lab"} logo`} height={150} width={200} />
+                <img src={brandData.icon} alt={`${brandData?.name || "CloudBurst Lab"} logo`} height={150} width={200} />
               </Link>
             )}
             <p>A product of {brandData?.name || "CloudBurst Lab"}</p>

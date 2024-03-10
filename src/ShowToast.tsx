@@ -16,19 +16,34 @@ export default function ShowToast({ toastMessage, toastAction }: { toastMessage:
     );
 
     useEffect(() => {
-        toast(toastBox, {
-            position: "bottom-right",
-            autoClose: false,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            rtl: false,
-            theme: "light",
-            transition: Bounce,
-            className: "toast-shas",
-        });
+
+        const now = new Date();
+
+        const gettedItem = localStorage.getItem("shas-toast-message");
+        const validate = localStorage.getItem("shas-toast-validate");
+
+        const validateDate = validate ? new Date(validate) : now;
+    
+        if (gettedItem !== toastMessage || validateDate <= now) {
+            toast(toastBox, {
+                position: "bottom-right",
+                autoClose: false,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                rtl: false,
+                theme: "light",
+                transition: Bounce,
+                className: "toast-shas",
+                onClose: () => {
+                    const next24Hours = new Date(now.getTime() + (24 * 60 * 60 * 1000)).toLocaleString();
+                    localStorage.setItem("shas-toast-message", toastMessage)
+                    localStorage.setItem("shas-toast-validate", next24Hours);
+                }
+            });
+        }
     }, []);
 
     return (
