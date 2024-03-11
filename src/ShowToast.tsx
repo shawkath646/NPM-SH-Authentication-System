@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function ShowToast({ toastMessage, toastAction }: { toastMessage: string; toastAction?: string }) {
+export default function ShowToast({ toastReminder = 86400, toastMessage, toastAction }: { toastReminder?: number; toastMessage: string; toastAction?: string }) {
 
     const toastBox = (
         <div className="toast-body-shas">
@@ -38,7 +38,7 @@ export default function ShowToast({ toastMessage, toastAction }: { toastMessage:
                 transition: Bounce,
                 className: "toast-shas",
                 onClose: () => {
-                    const next24Hours = new Date(now.getTime() + (24 * 60 * 60 * 1000)).toLocaleString();
+                    const next24Hours = new Date(now.getTime() + (toastReminder * 1000)).toLocaleString();
                     localStorage.setItem("shas-toast-message", toastMessage)
                     localStorage.setItem("shas-toast-validate", next24Hours);
                 }

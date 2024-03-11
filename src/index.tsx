@@ -1,154 +1,29 @@
 "use server";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
+import cache from "./inMemoryCache";
 import ShowToast from "./ShowToast";
+import getData from "./getData";
+import { SHASOptionType } from "./types";
 import "./styles.css";
 
-interface TimestampFieldValue {
-  _seconds: number;
-  _nanoseconds: number;
-}
-
-interface SHASOptionType {
-  appId?: string;
-  appSecret?: string;
-  cache?: RequestCache;
-}
-
-interface AppDataType {
-  appIcon: string;
-  appName: string;
-  author: string;
-  createdOn: Date | TimestampFieldValue;
-  id: string;
-  version: string;
-  website: string;
-  privacyPolicy: string;
-  contact: string;
-  inactiveMessage: string;
-  status: "active" | "suspended" | "inactive";
-  inactiveUntil: Date | null;
-  pageAlertMessage: string;
-  pageAlertAction: string;
-  description: string;
-  appType: "web application"
-  | "android application"
-  | "ios application"
-  | "native application";
-}
-
-interface BrandDataType {
-  name: string;
-  email: string;
-  website: string;
-  privacyPolicy: string;
-  icon: string;
-  copyrightText: string;
-  socialPlatform: string[];
-  category: string;
-  type: string;
-  help: string;
-}
-
-interface ApiResponseType {
-  status: "success" | "error";
-  message: string;
-  data?: {
-    appInfo: AppDataType;
-    brandInfo: BrandDataType;
-  };
-}
-
-interface ResponseType {
-  title?: string;
-  description?: string;
-  appData?: AppDataType;
-  brandData?: BrandDataType;
-}
 
 function formatDate(date: Date): string {
   const options = { day: '2-digit' as const, month: 'long' as const, year: 'numeric' as const };
   return date.toLocaleDateString('en-US', options);
 };
 
-function timeStampToDate(fieldValue: TimestampFieldValue | Date): Date {
-  if (fieldValue instanceof Date) return fieldValue;
-  const { _seconds, _nanoseconds } = fieldValue;
-  const milliseconds = _seconds * 1000 + _nanoseconds / 1000000;
-  return new Date(milliseconds);
-};
-
-async function getData(options: SHASOptionType): Promise<ResponseType> {
-
-  if (!options.appId || !options.appSecret) return {
-    title: "Insufficient or invalid data has been provided.",
-    description: "App id or secret is not found or invalid"
-  };
-
-  const apiEndPoint = "https://sh-authentication-system.vercel.app/api/get-info";
-
-  const response = await fetch(apiEndPoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      client_id: options.appId,
-      client_secret: options.appSecret
-    }),
-    cache: options.cache,
-  });
-
-
-  const recieved = await response.json() as ApiResponseType;
-
-  if (recieved.status == "error") return {
-    title: "Server returned with error",
-    description: recieved.message
-  }
-
-  if (!recieved.data) return {
-    title: "Failed to fetch data",
-    description: "Server returned with success but data is null",
-  }
-
-  recieved.data.appInfo.createdOn = timeStampToDate(recieved.data.appInfo.createdOn);
-  if (recieved.data.appInfo.inactiveUntil) recieved.data.appInfo.inactiveUntil = timeStampToDate(recieved.data.appInfo.inactiveUntil);
-
-
-  if (
-    recieved.data.appInfo.status === "inactive" &&
-    (!recieved.data.appInfo.inactiveUntil || recieved.data.appInfo.inactiveUntil > new Date())
-  ) {
-    return {
-      title: "Application Deactivated by Administrator",
-      description: recieved.data.appInfo.inactiveMessage,
-      appData: recieved.data.appInfo,
-      brandData: recieved.data.brandInfo,
-    };
-  }
-
-  if (recieved.data.appInfo.status === "suspended") return {
-    title: "Application Suspended",
-    description: `Your application has been suspended by the ${recieved.data.brandInfo.name || "CloudBurst Lab"} control panel due to the detection of unusual activities or violations of our rules.`,
-    appData: recieved.data.appInfo,
-    brandData: recieved.data.brandInfo,
-  }
-
-  return {
-    appData: recieved.data.appInfo,
-    brandData: recieved.data.brandInfo,
-  }
-};
 
 async function SHAS(options: SHASOptionType = {}) {
 
   if (!options.appId) options.appId = process.env.SHAS_APP_ID;
   if (!options.appSecret) options.appSecret = process.env.SHAS_APP_SECRET;
-  if (!options.cache) options.cache = "default";
+  if (!options.cache) options.cache = "no-cache";
 
-  const { appData, brandData, title, description } = await getData(options);
+  cache.setValue(options);
 
+  const { appData, brandData, title, description } = await getData();
 
   const ContentWrapper = async ({ children }: { children: React.ReactNode }) => (title || description) ? (
     <main className="main-shas">
@@ -172,7 +47,11 @@ async function SHAS(options: SHASOptionType = {}) {
           <section className="footer-logo-section-shas">
             {brandData?.icon && (
               <Link href={brandData?.website || "https://cloudburstlab.vercel.app"}>
-                <img src={brandData.icon} alt={`${brandData?.name || "CloudBurst Lab"} logo`} height={150} width={200} />
+                {options.imageOptimization ? (
+                  <Image src={brandData.icon} alt={`${brandData?.name || "CloudBurst Lab"} logo`} height={150} width={200} />
+                ) : (
+                  <img src={brandData.icon} alt={`${brandData?.name || "CloudBurst Lab"} logo`} height={150} width={200} />
+                )}
               </Link>
             )}
             <p>A product of {brandData?.name || "CloudBurst Lab"}</p>
@@ -184,7 +63,7 @@ async function SHAS(options: SHASOptionType = {}) {
   ) : (
     <>
       {children}
-      {appData?.pageAlertMessage && <ShowToast toastAction={appData?.pageAlertAction} toastMessage={appData.pageAlertMessage} />}
+      {appData?.pageAlertMessage && <ShowToast toastReminder={options.toastReminder} toastAction={appData?.pageAlertAction} toastMessage={appData.pageAlertMessage} />}
     </>
   );
 

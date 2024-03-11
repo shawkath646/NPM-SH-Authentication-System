@@ -20,7 +20,7 @@ Copy the **app id** and **app secret** that is provided into application details
 Create a **shas.config.ts** file in the root directory:
 ```
 
-import SHAS from "sh-authentication-system";
+import SHAS from "shas-app-controller";
 
 // pass app id and secret provided from our website
 
@@ -29,11 +29,30 @@ const { ContentWrapper, appData, brandData } = await SHAS({
   appId: process.env.SHAS_APP_ID as string,
   appSecret: process.env.SHAS_APP_SECRET as string,
 
-  // Optional
-  // If you want to modify node fetch caching props
-  // Default value is "default"
+  // ---------- Optional ----------
 
-  cache: "no-cache" // Suggested for quick update data from shas server.
+  // 1. If you wish to modify the Node Fetch caching properties, the default value is set to 'no-cache'.
+
+  cache: "no-cache", // Suggested for quickly updating data from the SH Authentication System server.
+
+  // 2. Toast reminder: By default, it will reappear every 24 hours.
+
+  toastReminder: 86400, // In seconds
+
+  /* 3. Image Optimization: If you wishes to use NextJS image optimization in your error, disabled pages. By default it will use HTML img.
+
+  Note: If you use image optimization you have to include this object in your next config image section.
+
+  {
+    protocol: 'https',
+    hostname: 'storage.googleapis.com',
+    port: '',
+    pathname: '/**',
+  },
+  
+  */
+
+  imageOptimaization: false, // Boolean
 
 });
 
@@ -88,6 +107,21 @@ import { appData, brandData } from "@/shas.config";
 // Do something with the data
 
 console.log(appData);
+
+```
+### 5. Accessing from client side
+Make sure you have initialized SHAS in the shas.config file.
+
+```
+
+import { getAppData, getBrandData } from "shas-app-controller/client";
+
+
+const { appData, status } = getAppData();
+
+const { brandData, status } = getBrandData();
+
+// Status can be "loading", "success", "error"
 
 ```
 
