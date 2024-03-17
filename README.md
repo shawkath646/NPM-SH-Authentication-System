@@ -31,7 +31,7 @@ const { ContentWrapper, appData, brandData } = await SHAS({
 
   // ---------- Optional ----------
 
-  // 1. If you wish to modify the Node Fetch caching properties, the default value is set to 'no-cache'.
+  // 1. If you wish to modify the Node Fetch caching properties, the default value is set to 'default'.
 
   cache: "no-cache", // Suggested for quickly updating data from the SH Authentication System server.
 

@@ -10,9 +10,10 @@ function timeStampToDate(fieldValue: TimestampFieldValue | Date): Date {
 };
 
 
-async function getData(): Promise<ResponseType> {
+async function getData(options?: SHASOptionType): Promise<ResponseType> {
 
-    const options = cache.getValue() as SHASOptionType;
+    if (options) cache.setValue(options);
+    else options = cache.getValue() as SHASOptionType;
 
     if (!options.appId || !options.appSecret) return {
         title: "Insufficient or invalid data has been provided.",
@@ -22,14 +23,11 @@ async function getData(): Promise<ResponseType> {
     const apiEndPoint = "https://sh-authentication-system.vercel.app/api/get-info";
 
     const response = await fetch(apiEndPoint, {
-        method: 'POST',
+        method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${Buffer.from(`${options.appId}:${options.appSecret}`).toString('base64')}`
         },
-        body: JSON.stringify({
-            client_id: options.appId,
-            client_secret: options.appSecret
-        }),
         cache: options.cache,
     });
 

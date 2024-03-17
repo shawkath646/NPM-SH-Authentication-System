@@ -1,13 +1,14 @@
 {
   "name": "shas-app-controller",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "This npm module is the SH Authentication System, designed for managing applications and retrieving data registered on the official website. The module supports fetching application data from the official website, as well as remotely activating, deactivating, and displaying alert toast messages without the need for rebuilding or modifying the source code.",
   "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./client": "./dist/client.js"
+    "./client": "./dist/client.js",
+    "./types": "./dist/types.d.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

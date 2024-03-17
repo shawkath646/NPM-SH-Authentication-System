@@ -2,7 +2,6 @@ export interface TimestampFieldValue {
     _seconds: number;
     _nanoseconds: number;
 }
-
 export interface SHASOptionType {
     appId?: string;
     appSecret?: string;
@@ -10,7 +9,11 @@ export interface SHASOptionType {
     imageOptimization?: boolean;
     toastReminder?: number;
 }
-
+export interface SocialPlatformType {
+    name: string;
+    icon: string;
+    url: string;
+}
 export interface AppDataType {
     appIcon: string;
     appName: string;
@@ -27,25 +30,21 @@ export interface AppDataType {
     pageAlertMessage: string;
     pageAlertAction: string;
     description: string;
-    appType: "web application"
-    | "android application"
-    | "ios application"
-    | "native application";
+    appType: "web application" | "android application" | "ios application" | "native application";
 }
-
 export interface BrandDataType {
     name: string;
     email: string;
     website: string;
     privacyPolicy: string;
-    icon: string;
+    iconTransparent: string;
+    iconWhite: string;
     copyrightText: string;
-    socialPlatform: string[];
+    socialPlatform: SocialPlatformType[];
     category: string;
     type: string;
     help: string;
 }
-
 export interface ApiResponseType {
     status: "success" | "error";
     message: string;
@@ -54,7 +53,6 @@ export interface ApiResponseType {
         brandInfo: BrandDataType;
     };
 }
-
 export interface ResponseType {
     title?: string;
     description?: string;
